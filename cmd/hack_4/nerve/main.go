@@ -20,17 +20,12 @@ func main() {
 	log.SetOutput(os.Stderr)
 
 	m := &mondo.Client{
-		HTTPClient: &mondo.UserHTTPClient{
+		HTTPClient: &mondo.HTTPClient{
 			Host:      Getenv("MONDO_API", "api.getmondo.co.uk"),
 			Client:    http.DefaultClient,
 			UserAgent: "hackathon-iv-tfl/0.1 (+https://github.com/icio/mondo)",
 		},
-		Auth: mondo.NewAccessTokenAuth(
-			"",
-			"",
-			os.Getenv("MONDO_ACCESS_TOKEN"),
-			"",
-		),
+		Auth: mondo.NewAccessTokenAuth(os.Getenv("MONDO_ACCESS_TOKEN")),
 	}
 
 	http.HandleFunc("/accounts", mondoAuth(m, accounts))
@@ -205,7 +200,7 @@ func extrapolateSightings(acc *hack_4.Account) []hack_4.Sighting {
 // accounts writes the list of a user's mondo accounts in the response.
 func accounts(m *mondo.Client, w http.ResponseWriter, r *http.Request) {
 	// Get the accounts listing.
-	accounts := new(mondodomain.AccountCollection)
+	accounts := new(mondodomain.AccountsResponse)
 	err := m.DoInto(mondohttp.NewAccountsRequest(""), accounts)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
