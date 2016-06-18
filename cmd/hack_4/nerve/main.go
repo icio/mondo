@@ -96,6 +96,9 @@ func journeys(m *mondo.Client, w http.ResponseWriter, r *http.Request) {
 		if lastSeen.Out {
 			suffix := ""
 			if lastSeen.LimitCrossed {
+				// FIXME: LimitCrossed is true for all journeys whose cost is
+				// affected by the spending cap, so we should check whether
+				// the previous journey had already hit the cap.
 				suffix = " You've just hit your spending limit for the day. Future travel won't cost a thing! \U0001f389\U0001f4b8"
 				// Unless you travel into a different zone?
 			}
