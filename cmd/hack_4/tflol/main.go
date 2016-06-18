@@ -39,7 +39,13 @@ func main() {
 	for update := range updates {
 		jsonUpdate, _ := json.Marshal(update)
 		log.Printf("%s", jsonUpdate)
-		http.Post(Getenv("NERVE_URL", "http://localhost:8080/journeys"), "application/json", bytes.NewReader(jsonUpdate))
+
+		resp, err := http.Post(Getenv("NERVE_URL", "http://localhost:8080/journeys"), "application/json", bytes.NewReader(jsonUpdate))
+		if err != nil {
+			log.Printf("Error posting to nerve: %s", err)
+		} else {
+			log.Printf("Posted to nerve %d", resp.StatusCode)
+		}
 	}
 }
 
