@@ -6,7 +6,7 @@ Assuming you have a defined `GOPATH` envvar:
 # Check out the code:
 git clone https://github.com/icio/mondo/ $GOPATH/src/github.com/icio/mondo --branch=hack4-realtime-tfl
 
-# TfL Authentication:
+# TfL Authentication: (sign up at https://contactless.tfl.gov.uk/ and register your Mondo card)
 export TFL_USERNAME=
 export TFL_PASSWORD=
 
