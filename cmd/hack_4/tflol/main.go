@@ -144,11 +144,14 @@ func parseAccountPage(resp *http.Response) (*hack_4.Account, error) {
 		return nil, err
 	}
 
-	spendingToday, _ := parseCost(doc.Find("#intradayTotalCharge").Text())
+	log.Printf("Parsing %s: %s", resp.Request.URL, doc.Find("title").Text())
+
+	travel := doc.Find("#card-0")
+	spendingToday, _ := parseCost(travel.Find("span[data-pageobject=intradayTotalCharge]").Text())
 
 	var payments []hack_4.Payment
-	doc.Find(".csc-payment-row").Each(func(i int, s *goquery.Selection) {
-		cost, _ := parseCost(s.Find("span[data-pageobject=journey-price]").Text())
+	travel.Find("div.row[data-pageobject=statement-paymentrow]").Each(func(i int, s *goquery.Selection) {
+		cost, _ := parseCost(s.Find("span[data-pageobject=journey-fare]").Text())
 		departure, arrival := parseJourneyTime(s.Find("span[data-pageobject=journey-time]").Text())
 		payments = append(payments, hack_4.Payment{
 			Origin:      s.Find("span[data-pageobject=journey-from]").Text(),
@@ -192,9 +195,9 @@ func parseTime(timeText string) *time.Time {
 }
 
 func parseCost(price string) (int, error) {
-	price = strings.Trim(price, " \n")
+	price = strings.Trim(price, " \n£*")
 	if len(price) > 2 {
-		cost, err := strconv.ParseFloat(price[2:], 64)
+		cost, err := strconv.ParseFloat(price, 64)
 		if err != nil {
 			return 0, err
 		}
