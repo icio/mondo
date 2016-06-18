@@ -29,6 +29,11 @@ func main() {
 	updates := make(chan *hack_4.Account)
 	user := os.Getenv("TFL_USERNAME")
 	pass := os.Getenv("TFL_PASSWORD")
+
+	if user == "" || pass == "" {
+		panic("Envvars TFL_USERNAME and TFL_PASSWORD must be set.")
+	}
+
 	go client.Monitor(user, pass, time.Second, updates)
 
 	for update := range updates {

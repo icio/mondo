@@ -19,6 +19,10 @@ func main() {
 	log.SetFlags(log.LstdFlags)
 	log.SetOutput(os.Stderr)
 
+	if os.Getenv("MONDO_ACCESS_TOKEN") == "" || os.Getenv("MONDO_ACCOUNT_ID") == "" {
+		panic("Envvars MONDO_ACCESS_TOKEN and MONDO_ACCOUNT_ID are required.")
+	}
+
 	m := &mondo.Client{
 		HTTPClient: &mondo.HTTPClient{
 			Host:      Getenv("MONDO_API", "api.getmondo.co.uk"),
